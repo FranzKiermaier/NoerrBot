@@ -28,6 +28,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
 
         private static async Task ShowRootOptions(IDialogContext context)
         {
+            
             await context.PostAsync("Welcome, how can I help you?");
             await context.PostAsync("Looking for products? Managing your Basket? Or want to check out?");
         }
@@ -35,9 +36,12 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
         private async Task GetUsersRootOptionSelection(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
             var message = await result;
+            var acivity = (Activity)message;
             if (message.Text.ToLower().Contains("products"))
             {
-                await context.Forward(new ProductDialog(), AfterProductSelectionDone, message, CancellationToken.None);
+                await context.PostAsync(((Microsoft.Bot.Connector.Activity)message).From.Name);
+                
+                await context.Forward(new AdaptiveCardsEchoDialog(), AfterProductSelectionDone, message, CancellationToken.None);
             }
             else
             {

@@ -47,6 +47,9 @@
     <NoWarn>CS1998</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AdaptiveCards, Version=0.5.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AdaptiveCards.0.5.1\lib\net452\AdaptiveCards.dll</HintPath>
+    </Reference>
     <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
       <Private>True</Private>
@@ -187,7 +190,10 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
+    <Compile Include="Dialogs\LuisEchoDialog.cs" />
     <Compile Include="Dialogs\EchoDialog.cs" />
+    <Compile Include="Dialogs\LuisProductDialog.cs" />
+    <Compile Include="Dialogs\AdaptiveCardsEchoDialog.cs" />
     <Compile Include="Dialogs\ProductDialog.cs" />
     <Compile Include="Domain\Product.cs" />
     <Compile Include="Forms\ProductForm.cs" />
