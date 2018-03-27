@@ -39,7 +39,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             var acivity = (Activity)message;
             if (message.Text.ToLower().Contains("products"))
             {
-                await context.PostAsync(((Microsoft.Bot.Connector.Activity)message).From.Name);
+                await context.PostAsync($"Current User: ((Microsoft.Bot.Connector.Activity)message).From.Name");
                 
                 await context.Forward(new AdaptiveCardsEchoDialog(), AfterProductSelectionDone, message, CancellationToken.None);
             }
