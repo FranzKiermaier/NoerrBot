@@ -4,7 +4,9 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Dialogs;
 using System.Net.Http;
-
+using SimpleEchoBot.Dialogs;
+using System.Threading;
+using SimpleEchoBot.Domain;
 
 namespace Microsoft.Bot.Sample.SimpleEchoBot
 {
@@ -20,37 +22,35 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
 
         public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
-            var message = await argument;
+            await ShowRootOptions(context);
+            context.Wait(GetUsersRootOptionSelection);
+        }
 
-            if (message.Text == "reset")
+        private static async Task ShowRootOptions(IDialogContext context)
+        {
+            await context.PostAsync("Welcome, how can I help you?");
+            await context.PostAsync("Looking for products? Managing your Basket? Or want to check out?");
+        }
+
+        private async Task GetUsersRootOptionSelection(IDialogContext context, IAwaitable<IMessageActivity> result)
+        {
+            var message = await result;
+            if (message.Text.ToLower().Contains("products"))
             {
-                PromptDialog.Confirm(
-                    context,
-                    AfterResetAsync,
-                    "Are you sure you want to reset the count?",
-                    "Didn't get that!",
-                    promptStyle: PromptStyle.Auto);
+                await context.Forward(new ProductDialog(), AfterProductSelectionDone, message, CancellationToken.None);
             }
             else
             {
-                await context.PostAsync($"{this.count++}: You said {message.Text}");
-                context.Wait(MessageReceivedAsync);
+                await ShowRootOptions(context);
             }
         }
 
-        public async Task AfterResetAsync(IDialogContext context, IAwaitable<bool> argument)
+        private async Task AfterProductSelectionDone(IDialogContext context, IAwaitable<object> result)
         {
-            var confirm = await argument;
-            if (confirm)
-            {
-                this.count = 1;
-                await context.PostAsync("Reset count.");
-            }
-            else
-            {
-                await context.PostAsync("Did not reset count.");
-            }
-            context.Wait(MessageReceivedAsync);
+            var messageObject = await result;
+            var product = (Product)messageObject;
+            await context.PostAsync($"you have ordered {product.Name}");
+            await context.PostAsync("Looking for products? Managing your Basket? Or want to check out?");
         }
 
     }
